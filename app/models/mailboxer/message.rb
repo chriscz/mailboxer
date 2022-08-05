@@ -1,5 +1,6 @@
 class Mailboxer::Message < Mailboxer::Notification
   # attr_accessible :attachment if Mailboxer.protected_attributes?
+  has_rich_text :rich_body
   attr_accessible :attachments if Mailboxer.protected_attributes?
   self.table_name = :mailboxer_notifications
 
