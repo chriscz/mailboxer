@@ -1,8 +1,8 @@
 ## Preparations
-- `appraisal install`
+- `matrix-each bundle install`
 
 ## Running Tests
-- `appraisal rspec`
+- `matrix-each rspec`
 
 ## Focusing on a test
 See https://stackoverflow.com/a/5072879/2490686
@@ -20,4 +20,3 @@ end
 
 $ rspec --tag focus spec/my_spec.rb
 ```
-
