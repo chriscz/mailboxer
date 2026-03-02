@@ -1,11 +1,3 @@
-source 'http://rubygems.org'
+raise "BUG: Expected ENV['BUNDLE_GEMFILE'] to be defined!" unless ENV['BUNDLE_GEMFILE'].to_s.length > 0
 
-gem 'rails', '~> 6.1'
-gem 'mailboxer', :path => '../../'
-gem 'factory_girl'
-gem 'listen'
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
-gem "sqlite3", :platform => [:ruby, :mswin, :mingw]
-gem "jdbc-sqlite3", :platform => :jruby
+eval File.read(ENV["BUNDLE_GEMFILE"])

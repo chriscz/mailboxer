@@ -4,6 +4,10 @@ ruby "2.7.8"
 
 gem "pry"
 gem "pry-byebug"
+
+gem "sqlite3", :platform => [:ruby, :mswin, :mingw]
+gem "jdbc-sqlite3", :platform => :jruby
+
 gem "rails", "~> 5.2"
 
 gemspec :path => "../"

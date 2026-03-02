@@ -2,8 +2,13 @@ source "http://rubygems.org"
 
 ruby "3.0.7"
 
+gem "debug"
 gem "pry"
 gem "pry-byebug"
+
+gem "sqlite3", "> 1.4", "< 2.0", :platform => [:ruby, :mswin, :mingw]
+gem "jdbc-sqlite3", :platform => :jruby
+
 gem "rails", "~> 6.0"
 
 gemspec :path => "../"

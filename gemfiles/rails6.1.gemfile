@@ -1,9 +1,20 @@
 source "http://rubygems.org"
 
-ruby "3.1.7"
+ruby "3.3.5"
 
+gem "logger"
+gem "bigdecimal"
+gem "mutex_m"
+gem "ostruct"
+gem "drb"
+
+gem "debug"
 gem "pry"
 gem "pry-byebug"
+
+gem "sqlite3", "> 1.4", "< 2.0", :platform => [:ruby, :windows]
+gem "jdbc-sqlite3", :platform => :jruby
+
 gem "rails", "~> 6.1"
 
 gemspec :path => "../"
