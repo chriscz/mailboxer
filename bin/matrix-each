@@ -1,0 +1,39 @@
+#!/bin/bash
+# Exit immediately if a command exits with a non-zero status.
+# Treat unset variables as an error when substituting.
+# Pipelines return the exit status of the last command that failed,
+# or zero if all commands in the pipeline succeed.
+set -eou pipefail
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+PATH="${SCRIPT_DIR}:${PATH}"
+
+# Define the directory where matrix files are located relative to the project root.
+MATRIX_DIR="${SCRIPT_DIR}/../matrix"
+
+# Check if any command-line arguments were provided.
+if [ "$#" -eq 0 ]; then
+  echo "Error: No command provided." >&2
+  echo "Usage: $(basename "$0") <command...> " >&2
+  echo "Example: $(basename "$0") ls -l" >&2
+  exit 1
+fi
+
+# Find all .matrix files in the matrix directory.
+# The find command is used here to handle potential spaces or special characters in filenames,
+# and -print0 with xargs -0 is a robust way to process them.
+find "${MATRIX_DIR}" -name "*.matrix" -print0 | while IFS= read -r -d $'\0' matrix_file; do
+  # Extract the matrix name by removing the directory and the .matrix extension.
+  matrix_name=$(basename "${matrix_file}" .matrix)
+
+  echo "--- ${matrix_name}$ ${@}"
+
+  # Execute the bin/matrix script with the current matrix name and the original arguments passed to this script.
+  # The "./bin/matrix" assumes this script is run from the project root.
+  matrix "${matrix_name}" "$@"
+
+  echo "" # Add a blank line for better readability between matrix runs.
+done
+
+echo "All matrix runs completed."

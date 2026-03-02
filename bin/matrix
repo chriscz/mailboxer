@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status.
+# Treat unset variables as an error when substituting.
+# Pipelines return the exit status of the last command that failed,
+# or zero if all commands in the pipeline succeed.
+set -eou pipefail
+
+# Determine the script's directory and change to the project root.
+# This ensures that relative paths like 'matrix/' are correctly resolved.
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd "${SCRIPT_DIR}/.."
+
+# Export the application root directory, which might be used by matrix files.
+export APP_ROOT_DIR="$(pwd)"
+
+# Define the directory where matrix files are located relative to the project root.
+MATRIX_DIR="matrix"
+
+# Check if a matrix name was provided as the first argument.
+if [ "$#" -eq 0 ]; then
+  echo "Error: No matrix name provided." >&2
+  echo "Usage: $(basename "$0") <matrix_name> [command...]" >&2
+  exit 1
+fi
+
+MATRIX_NAME="$1"
+MATRIX_FILE="${MATRIX_DIR}/${MATRIX_NAME}.matrix"
+
+# Check if the specified matrix file exists.
+if [ ! -f "${MATRIX_FILE}" ]; then
+  echo "Error: Matrix file '${MATRIX_FILE}' not found." >&2
+  exit 1
+fi
+
+# Shift the arguments so that the matrix name is removed.
+# The remaining arguments ($@) will be the command to execute.
+shift
+
+# Source the matrix file.
+# The matrix file is expected to set up the environment and then use 'exec'
+# to run the actual command with the remaining arguments.
+# For example, a matrix file might contain:
+# export BUNDLE_GEMFILE="..."
+# exec mise exec ... -- ${@}
+# The ${@} here will correctly refer to the shifted arguments from this script.
+source "${MATRIX_FILE}"
+
+# If the sourced matrix file does not contain an 'exec' command that replaces
+# the current shell process, the script would continue here.
+# Based on the typical structure of such setup scripts, the 'exec' command
+# in the matrix file is responsible for running the final command.
+# Therefore, no further explicit command execution is needed here.
