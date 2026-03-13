@@ -224,9 +224,8 @@ class Mailboxer::Conversation < ActiveRecord::Base
     !!@sanitize_text
   end
 
-  #Use the default sanitize to clean the conversation subject
+  #Subject is plain text and must not be HTML-encoded; nothing to clean.
   def clean
-    self.subject = sanitize subject
   end
 
   def sanitize(text)

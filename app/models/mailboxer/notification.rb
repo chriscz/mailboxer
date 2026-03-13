@@ -164,10 +164,9 @@ class Mailboxer::Notification < ActiveRecord::Base
     return receipt_for(participant).mark_as_deleted
   end
 
-  #Sanitizes the body and subject
+  #Sanitizes the body only. Subject is plain text and must not be HTML-encoded.
   def clean
-    self.subject = sanitize(subject) if subject
-    self.body    = sanitize(body)
+    self.body = sanitize(body)
   end
 
   #Returns notified_object. DEPRECATED
