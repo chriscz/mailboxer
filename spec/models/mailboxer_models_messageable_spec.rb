@@ -356,15 +356,15 @@ describe "Mailboxer::Models::Messageable through User" do
       Mailboxer.uses_emails = @original_uses_emails
     end
 
-    it "sanitizes the subject and body by default" do
+    it "sanitizes the body by default but preserves the subject as-is" do
       receipt = @entity1.send_message(@entity2, @unsanitized.dup, @unsanitized.dup)
 
       expect(receipt.message.reload.body).to eq(@sanitized)
-      expect(receipt.message.reload.subject).to eq(@sanitized)
-      expect(receipt.conversation.reload.subject).to eq(@sanitized)
+      expect(receipt.message.reload.subject).to eq(@unsanitized)
+      expect(receipt.conversation.reload.subject).to eq(@unsanitized)
     end
 
-    it "does not sanitize subject or body when false" do
+    it "does not sanitize body when false, and always preserves subject as-is" do
       receipt = @entity1.send_message(@entity2, @unsanitized.dup, @unsanitized.dup, false)
 
       expect(receipt.message.reload.body).to eq(@unsanitized)
