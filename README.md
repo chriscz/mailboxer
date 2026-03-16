@@ -317,6 +317,33 @@ If you need a GUI you should take a look at these links:
 
 * The wiki page [GUI Example on a real application](https://github.com/chriscz/mailboxer/wiki/GUI-Example-on-a-real-application).
 
+
+## Development Environment Tips
+- If you run into weird bundle issues, then try to remove all gems (run again on error)
+  ```
+  bin/matrix rails5.2 gem uninstall --all -aIx
+  ```
+- Sometimes your gem system (`rubygems-update`) might be outdated and has a bug.
+  In such cases you can find the latest compatible version by checking:
+  ```
+  curl -s "https://rubygems.org/api/v1/versions/rubygems-update.json" | jq -r '.[] | "\(.number): ruby \(.ruby_version // "any")"'
+  3.5.1: ruby >= 3.0.0
+
+  3.5.0: ruby >= 3.0.0
+  3.4.22: ruby >= 2.6.0
+  3.4.21: ruby >= 2.6.0
+  3.4.20: ruby >= 2.6.0
+  3.4.19: ruby >= 2.6.0
+  3.4.18: ruby >= 2.6.0
+  3.4.17: ruby >= 2.6.0
+  3.4.16: ruby >= 2.6.0
+  3.4.15: ruby >= 2.6.0
+  ```
+  For old rubies like 2.7.8, this would be:
+  ```
+  bin/matrix rails5.2 bash -c 'gem update --system -v 3.4.22'
+  ```
+
 ## Merged Pull Requests
 * https://github.com/mailboxer/mailboxer/pull/508
 * https://github.com/mailboxer/mailboxer/pull/507

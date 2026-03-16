@@ -3,4 +3,4 @@
 export BUNDLE_GEMFILE="${APP_ROOT_DIR}/gemfiles/${MATRIX_NAME}.gemfile"
 MISE_TOOLS="$(grep "^ruby" "$BUNDLE_GEMFILE" | sed -e 's/ /@/g' -e 's/"//g')"
 
-exec mise exec ${MISE_TOOLS} -- ${@}
+exec mise exec ${MISE_TOOLS} -- "${@}"
