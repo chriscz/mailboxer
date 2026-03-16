@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    container:
+      image: ruby:${{ matrix.ruby }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "Rails 5.2 / Ruby 2.7.8"
+            ruby: "2.7.8"
+            gemfile: "gemfiles/rails5.2.gemfile"
+
+          - name: "Rails 6.0 / Ruby 3.0.7"
+            ruby: "3.0.7"
+            gemfile: "gemfiles/rails6.0.gemfile"
+
+          - name: "Rails 6.1 / Ruby 3.3.5"
+            ruby: "3.3.5"
+            gemfile: "gemfiles/rails6.1.gemfile"
+
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/${{ matrix.gemfile }}
+      NOKOGIRI_USE_SYSTEM_LIBRARIES: "true"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends \
+            libsqlite3-dev \
+            libxml2-dev \
+            libxslt1-dev
+
+      - name: Cache gems
+        uses: actions/cache@v4
+        with:
+          path: vendor/bundle
+          key: gems-ruby${{ matrix.ruby }}-${{ hashFiles(matrix.gemfile, 'mailboxer.gemspec') }}
+          restore-keys: |
+            gems-ruby${{ matrix.ruby }}-
+
+      - name: Update RubyGems (Ruby 2.7.8 only)
+        if: matrix.ruby == '2.7.8'
+        run: gem update --system 3.4.22
+
+      - name: Install gems
+        run: |
+          bundle config set --local path vendor/bundle
+          bundle install --jobs 4 --retry 3
+
+      - name: Run tests
+        run: bundle exec rspec
